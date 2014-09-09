@@ -11,10 +11,7 @@ using System.Windows.Forms;
 namespace Template {
 	public partial class Form1 : Form {
 		#region Variables
-		/// <summary>
-		/// Random Number Generator
-		/// </summary>
-		public Random rng = new Random();
+		#region Graphics
 		/// <summary>
 		/// fx,fy is the size of the form; fx2,fy2 is half that;
 		/// so that (fx2, fy2) is the center of the form
@@ -35,15 +32,52 @@ namespace Template {
 		/// <summary>
 		/// The timer object for setting the heartbeat
 		/// </summary>
-		private Timer tim = new Timer() { Interval = 1000 / 60 };
+		private Timer frameTimer = new Timer() { Interval = 1000 / 60 };
 		/// <summary>
 		/// The start time for frame timings
 		/// </summary>
-		private DateTime st;
+		private DateTime frameTimerStart;
 		/// <summary>
 		/// The finish time for frame timings
 		/// </summary>
-		private TimeSpan ft;
+		private TimeSpan frameTimerFinish;
+		/// <summary>
+		/// Total number of frames elapsed since start
+		/// </summary>
+		private static ulong _tfr = 0; public static ulong tfr { get { return _tfr; } }
+		#endregion Graphics
+		#region Physics
+		/// <summary>
+		/// Delta Time, used for slowing down time
+		/// </summary>
+		public static double dt = 1.0;
+		/// <summary>
+		/// Gravity, in Sk/Kr2
+		/// 
+		/// </summary>
+		public static double G = 7.2789375790163706e+002;
+
+		#endregion Physics
+		#region Game
+		/// <summary>
+		/// Random Number Generator
+		/// </summary>
+		public Random rng = new Random();
+		/// <summary>
+		/// Game State enum
+		/// </summary>
+		public enum eGS { Title, NewGame, Test }
+		/// <summary>
+		/// Current Game State
+		/// </summary>
+		private static eGS _GS = eGS.Test;
+
+		/// <summary>
+		/// List of Actors
+		/// </summary>
+		//public static List<Actor> actors = new List<Actor>();
+
+		#endregion Game
 
 		#endregion Variables
 		#region Events
@@ -51,48 +85,80 @@ namespace Template {
 		private void Form1_Load(object sender, EventArgs e) {
 			fx = Width; fy = Height; fx2 = fx / 2; fy2 = fy / 2;
 			gi = new Bitmap(fx, fy); gb = Graphics.FromImage(gi);
-			gf = CreateGraphics(); tim.Tick += tim_Tick;
+			gf = CreateGraphics(); frameTimer.Tick += frameTimer_Tick;
 
-			tim.Start();
+
+			// Init code here
+
+
+			frameTimer.Start();
 			Calc(); Draw();
-		}
+		} // Form1_Load
 		private void Form1_KeyDown(object sender, KeyEventArgs e) {
 			switch(e.KeyCode) {
 				case Keys.Escape: Close(); return;
 
-				default: break;
-			}
-		}
-		private void Form1_MouseClick(object sender, MouseEventArgs e) {
+				default: switch(_GS) {
+						case eGS.Title: break;
+						case eGS.NewGame: break;
+						case eGS.Test: break;
 
-		}
+						default: break;
+					} break; // default: switch(_GS)
+			} // switch(e.KeyCode)
+		} // Form1_KeyDown
+		private void Form1_MouseClick(object sender, MouseEventArgs e) {
+			switch(_GS) {
+				case eGS.Title: break;
+				case eGS.NewGame: break;
+				case eGS.Test: break;
+
+				default: break;
+			} // switch(_GS)
+		} // Form1_MouseClick
 		private void Form1_Paint(object sender, PaintEventArgs e) { gf.DrawImage(gi, 0, 0); }
-		void tim_Tick(object sender, EventArgs e) { Calc(); Draw(); }
+		void frameTimer_Tick(object sender, EventArgs e) { Calc(); Draw(); _tfr++; }
 
 		#endregion Events
 		#region Calc
 		public void Calc() {
-			st = DateTime.Now;
+			frameTimerStart = DateTime.Now;
 			gb.Clear(Color.Black);
 
+			switch(_GS) {
+				case eGS.Title: break;
+				case eGS.NewGame: break;
+				case eGS.Test: break;
 
-		}
+				default: break;
+			} // switch(_GS)
+
+		} // Calc
 
 		#endregion Calc
 		#region Draw
 		public void Draw() {
+			switch(_GS) {
+				case eGS.Title: break;
+				case eGS.NewGame: break;
+				case eGS.Test: break;
+
+				default: break;
+			} // switch(_GS)
 
 
-			ft = DateTime.Now - st;
-			gb.DrawString(ft.TotalMilliseconds.ToString() + "ms", Font, Brushes.White, 0, 0);
-			gb.DrawString((1000 / ft.TotalMilliseconds).ToString() + " FPS", Font, Brushes.White, 0, 16);
+			// Time and draw the fps counter
+			frameTimerFinish = DateTime.Now - frameTimerStart;
+			gb.DrawString(frameTimerFinish.TotalMilliseconds.ToString() + "ms", Font, Brushes.White, 0, 0);
+			gb.DrawString((1000 / frameTimerFinish.TotalMilliseconds).ToString() + " FPS", Font, Brushes.White, 0, 16);
+			// Swap the buffer
 			gf.DrawImage(gi, 0, 0);
-		}
+		} // Draw
 
 		#endregion Draw
 		#region Methods
 
 		#endregion Methods
 
-	}
-}
+	} // Class Form1
+} // Namespace Template
